@@ -35,8 +35,7 @@ const Routes = __importStar(require("./Routes/Routes"));
 /**
  * Primary app routes.
  */
-// app.get('/', Routes.welcomeRoute);
-app.get('/build/projectName/projectArea/commitId', Routes.startJenkinsJob);
+app.post('/', Routes.startJenkinsJob);
 app.listen(app.get('port'), () => {
     console.log('  App is running at http://localhost:%d in %s mode');
     console.log('Press CTRL-C to stop\n');

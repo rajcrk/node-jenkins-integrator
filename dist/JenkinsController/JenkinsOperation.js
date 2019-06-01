@@ -32,7 +32,7 @@ function getBuildConsole(projectName) {
         let _jwtTokenURL = `http://192.168.100.29:8080/job/${projectName}/lastBuild/api/json`;
         return new Promise((resolve, reject) => {
             request_1.post(_jwtTokenURL, {}, (err, resp, body) => {
-                if (resp) {
+                if (resp.body) {
                     let reponseJenk = JSON.parse(resp.body);
                     return resolve(reponseJenk.result);
                     // return reponseJenk.result;

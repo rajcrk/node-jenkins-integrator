@@ -29,7 +29,7 @@ async function getBuildConsole(projectName: string): Promise<any> {
     return new Promise<any>((resolve: any, reject: any) => {
         post(_jwtTokenURL, {
         }, (err: any, resp: any, body: any) => {
-            if (resp) {
+            if (resp.body) {
                 let reponseJenk = JSON.parse(resp.body);
                 return resolve(reponseJenk.result);
                 // return reponseJenk.result;

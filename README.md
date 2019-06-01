@@ -19,7 +19,7 @@ Click the configuration tab of the Hangouts Chat API and enter in the nessesary 
 <li>Google Chatbot with Chatbot API configuration</li>
 <li>ngrok</li>
 
-###Deploying the node-chat app
+### Deploying the node-chat app
 Clone this repository using the following command.
 ```shell
 git clone https://github.com/rajcrk/node-chat-integrator.git

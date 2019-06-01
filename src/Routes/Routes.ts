@@ -1,4 +1,3 @@
-// import async from 'async';
 import { Request, Response } from "express";
 import * as JenkinsOperation from '../JenkinsController/JenkinsOperation';
 import { stringify } from "querystring";

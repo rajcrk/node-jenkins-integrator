@@ -8,18 +8,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const JenkinsOperation = __importStar(require("../JenkinsController/JenkinsOperation"));
-/**
- * GET /All Asset
- * Veiw all property page.
- */
 exports.startJenkinsJob = (req, res) => {
-    let isMessageValidBoolean;
-    var resposeToSend;
     let chatBotMessage = formattingMessage(req);
     /*
     Checking if the user provided message is valid or not
     */
-    // if (!isMessageValid(chatBotMessage)) { res.send({ text: `Semms like you typed in something wrong !, Dont worry follow this method\nZilker Deploy Bot, Mr. Meeseeks\nUsing me you can deploy projects by providing in the depolyment ID\nSounds fun right ?\nFormat for using this bot\nbuild <project-name> <work-area> <commit-id>` }) }
     if (!isMessageValid(chatBotMessage)) {
         res.send({
             "cards": [
@@ -29,7 +22,7 @@ exports.startJenkinsJob = (req, res) => {
                             "widgets": [
                                 {
                                     "textParagraph": {
-                                        "text": "<b>Mr. Meeseeks</b>:<br>Seems like your message is not following the format<hr><br>Format for using this bot <b><font color=\"#0000ff\"><br>build [project-name] [work-area] [commit-id] </font></b>"
+                                        "text": "<b>Mr. Meeseeks</b>:<br>Seems like your message is not following the format<hr><br>Format for using this bot <b><font color=\"#0000ff\"><br>build [project-name] [work-area] [commit-id] </font></b><br>Format for checking status<b><font color=\"#0000ff\"><br>status [project-name]</font></b><br>Format for deleting job<b><font color=\"#0000ff\"><br>delete [project-name]</font></b><br>Format for building with param <b><font color=\"#0000ff\"><br>buildWithParameters [project-name]</font></b>"
                                     }
                                 }
                             ]
@@ -41,27 +34,77 @@ exports.startJenkinsJob = (req, res) => {
         return;
     }
     let message = SplitString(chatBotMessage);
+    var job = message[0];
     var projectName = message[1];
     var workArea = message[2];
     var commitId = message[3];
-    console.log('Just before fetchAsync');
-    JenkinsOperation.fetchAsync(projectName, workArea, commitId)
-        .then(data => {
-        console.log('=================Entering into JenkinsOperation==========================');
-        console.log(data);
-        resposeToSend = data;
-        res.send({ text: `${projectName} setup started ...` });
-    })
-        .catch(reason => {
-        console.log(reason.message);
-        res.send({ text: `Seems Something Went Wrong !! ...` });
-    });
+    if (message[0] == 'build') {
+        JenkinsOperation.buildProject(job, projectName, workArea, commitId)
+            .then(data => {
+            console.log(data);
+            res.send({ text: data });
+        })
+            .catch(err => {
+            res.send({ text: `Seems Something Went Wrong !! ...${err}` });
+        });
+    }
+    else if (message[0] == 'status') {
+        JenkinsOperation.getBuildConsole(projectName)
+            .then(data => {
+            res.send({ text: data.toString() });
+        })
+            .catch(err => {
+            res.send({ text: `Seems Something Went Wrong in getting build status of ${projectName} !! ...${err}` });
+        });
+    }
+    else if (message[0] == 'delete') {
+        JenkinsOperation.deleteJob(projectName)
+            .then(data => {
+            res.send({ text: data.toString() });
+        })
+            .catch(err => {
+            res.send({ text: `Error deleting the ${projectName} !! ...${err}` });
+        });
+    }
+    else if (message[0] == 'buildWithParameters') {
+        var split = SplitString(chatBotMessage);
+        JenkinsOperation.buildWithParameters(split)
+            .then(data => {
+            res.send({ text: data.toString() });
+        })
+            .catch(err => {
+            res.send({ text: `Error deleting the ${projectName} !! ...${err}` });
+        });
+    }
+    else {
+        res.send({
+            "cards": [
+                {
+                    "sections": [
+                        {
+                            "widgets": [
+                                {
+                                    "textParagraph": {
+                                        "text": "<b>Mr. Meeseeks</b>:<br>Seems like your message is not following the format<hr><br>Format for using this bot <b><font color=\"#0000ff\"><br>build [project-name] [work-area] [commit-id] </font></b><br>Format for checking status<b><font color=\"#0000ff\"><br>status [project-name]</font></b><br>Format for deleting job<b><font color=\"#0000ff\"><br>delete [project-name]</font></b><br>Format for building with param <b><font color=\"#0000ff\"><br>buildWithParameters [project-name]</font></b>"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        return;
+    }
 };
 function SplitString(inputMessage) {
     let res = [];
     res = inputMessage.split(" ");
     console.log(res);
     return res;
+}
+function getParameters(paramterString) {
+    var splittedString = SplitString(paramterString);
 }
 function formattingMessage(req) {
     let text = '';
@@ -81,7 +124,7 @@ function formattingMessage(req) {
 }
 function isMessageValid(message) {
     let splittedMessage = message.split(" ");
-    if (splittedMessage.length != 4 && !(splittedMessage[2] == "ui" || splittedMessage[2] == "service")) {
+    if (splittedMessage.length < 2) {
         return false;
     }
     return true;

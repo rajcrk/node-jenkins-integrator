@@ -1,18 +1,22 @@
 # node-chat-integrator
 <hr>
+
 ### Project Setup
 <li>
 Setup a project for bot in the Google API console with the Hangouts Chat enabled
 </li>
 <li>Open your project in the API Console. In the list of APIs, click Hangouts Chat API.</li>
 <li>Select the Configuration tab and enter the information for the bot</li>
+
 ### Configuring the bot
+[Google Chatbot Configuration](https://console.developers.google.com/apis/api/chat.googleapis.com)
 Click the configuration tab of the Hangouts Chat API and enter in the nessesary information for the bot.
 ### Prerequisite
 <li>Node</li>
 <li>Jenkins</li>
 <li>Google Chatbot with Chatbot API configuration</li>
 <li>ngrok</li>
+
 ###Deploying the node-chat app
 Clone this repository using the following command.
 ```shell
